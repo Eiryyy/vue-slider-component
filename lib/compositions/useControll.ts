@@ -43,8 +43,8 @@ export const useControl = (
   min: Ref<number>,
   interval: Ref<number>,
   order: Ref<boolean>,
-  _maxRange?: Ref<number>,
-  _minRange?: Ref<number>,
+  _maxRange?: Ref<number | undefined>,
+  _minRange?: Ref<number | undefined>,
   marks?: Ref<MarksProp>,
   included?: Ref<boolean>,
   process?: Ref<ProcessProp>,
@@ -57,34 +57,33 @@ export const useControl = (
   const emitError = (type: ValueOf<typeof ERROR_TYPE>) => {
     onError?.(type, ERROR_MSG[type])
   }
-  const maxRange = computed(() => (order.value ? _maxRange.value || 0 : 0))
-  const minRange = computed(() => (order.value ? _minRange.value || 0 : 0))
+  const maxRange = computed(() => (order.value ? _maxRange?.value || 0 : 0))
+  const minRange = computed(() => (order.value ? _minRange?.value || 0 : 0))
   const enableCross = computed(() => (order.value ? _enableCross.value : true))
   const fixed = computed(() => (order.value ? _fixed.value : false))
-  if ((order.value && _maxRange.value) || _minRange.value || !_enableCross.value || _fixed.value) {
+  if (
+    (order.value && _maxRange?.value) ||
+    _minRange?.value ||
+    !_enableCross.value ||
+    _fixed.value
+  ) {
     emitError(ERROR_TYPE.ORDER)
   }
 
-  const setDotsValue = (value: Value[], syncPos?: boolean) => {
-    dotsValue.value = value
-    if (syncPos) {
-      syncDotsPos()
+  const total = computed(() => {
+    let total = 0
+    if (data.value) {
+      total = data.value.length - 1
+    } else {
+      total = new Decimal(max.value).minus(min.value).divide(interval.value).toNumber()
     }
-  }
-
-  const setValue = (value: Value | Value[]) => {
-    setDotsValue(Array.isArray(value) ? [...value] : [value], true)
-  }
-  setValue(value.value)
-
-  const setDotsPos = (_dotsPos: number[]) => {
-    const list = order.value ? [..._dotsPos].sort((a, b) => a - b) : _dotsPos
-    dotsPos.value = _dotsPos
-    setDotsValue(
-      list.map((dotPos) => getValueByPos(dotPos)),
-      adsorb.value,
-    )
-  }
+    if (total - Math.floor(total) !== 0) {
+      emitError(ERROR_TYPE.INTERVAL)
+      return 0
+    }
+    return total
+  })
+  const gap = computed(() => 100 / total.value)
 
   const parseValue = (val: Value) => {
     if (data.value) {
@@ -110,6 +109,31 @@ export const useControl = (
     return pos < 0 ? 0 : pos > 100 ? 100 : pos
   }
 
+  const syncDotsPos = () => {
+    dotsPos.value = dotsValue.value.map((v) => parseValue(v))
+  }
+
+  const setDotsValue = (value: Value[], syncPos?: boolean) => {
+    dotsValue.value = value
+    if (syncPos) {
+      syncDotsPos()
+    }
+  }
+
+  const setValue = (value: Value | Value[]) => {
+    setDotsValue(Array.isArray(value) ? [...value] : [value], true)
+  }
+  setValue(value.value)
+
+  const setDotsPos = (_dotsPos: number[]) => {
+    const list = order.value ? [..._dotsPos].sort((a, b) => a - b) : _dotsPos
+    dotsPos.value = _dotsPos
+    setDotsValue(
+      list.map((dotPos) => getValueByPos(dotPos)),
+      adsorb?.value,
+    )
+  }
+
   const parsePos = (pos: number) => {
     const index = Math.round(pos / gap.value)
     return getValueByIndex(index)
@@ -126,24 +150,9 @@ export const useControl = (
       : new Decimal(index).multiply(interval.value).plus(min.value).toNumber()
   }
 
-  const total = computed(() => {
-    let total = 0
-    if (data.value) {
-      total = data.value.length - 1
-    } else {
-      total = new Decimal(max.value).minus(min.value).divide(interval.value).toNumber()
-    }
-    if (total - Math.floor(total) !== 0) {
-      emitError(ERROR_TYPE.INTERVAL)
-      return 0
-    }
-    return total
-  })
-  const gap = computed(() => 100 / total.value)
-
   const getValueByPos = (pos: number) => {
     let value = parsePos(pos)
-    if (included.value) {
+    if (included?.value) {
       let dir = 100
       markList.value.forEach((mark) => {
         const curDir = Math.abs(mark.pos - pos)
@@ -168,15 +177,11 @@ export const useControl = (
     }
   }
 
-  const syncDotsPos = () => {
-    dotsPos.value = dotsValue.value.map((v) => parseValue(v))
-  }
-
   const isActiveByPos = (pos: number) =>
     processArray.value.some(([start, end]) => pos >= start && pos <= end)
 
   const processArray = computed((): ProcessOption => {
-    if (process.value) {
+    if (process?.value) {
       if (typeof process.value === 'function') {
         return process.value(dotsPos.value)
       } else if (dotsPos.value.length === 1) {
@@ -189,7 +194,7 @@ export const useControl = (
   })
 
   const markList = computed(() => {
-    if (!marks.value) {
+    if (!marks?.value) {
       return []
     }
 
@@ -252,11 +257,11 @@ export const useControl = (
   const maxRangeDir = computed(() => getRangeDir(maxRange.value))
   const minRangeDir = computed(() => getRangeDir(minRange.value))
   const getDotRange = (index: number, key: 'min' | 'max', defaultValue: number) => {
-    if (dotOptions.value) {
+    if (dotOptions?.value) {
       return defaultValue
     }
-    const option = Array.isArray(dotOptions.value) ? dotOptions.value[index] : dotOptions.value
-    return option && option[key] !== void 0 ? parseValue(option[key]) : defaultValue
+    const option = Array.isArray(dotOptions?.value) ? dotOptions?.value[index] : dotOptions?.value
+    return option && option[key] !== void 0 ? parseValue(option[key] as Value) : defaultValue
   }
 
   const valuePosRange = computed(() => {
@@ -324,7 +329,7 @@ export const useControl = (
         }
       }
     })
-    return dotsPos.value.map((_) => changePos)
+    return dotsPos.value.map(() => changePos)
   }
 
   const isPos = (pos: any): pos is number => {
@@ -378,4 +383,18 @@ export const useControl = (
   }
 
   const dotsIndex = computed(() => dotsValue.value.map((val) => getIndexByValue(val)))
+
+  return {
+    dotsIndex,
+    setDotPos,
+    dotsValue,
+    parseValue,
+    parsePos,
+    setValue,
+    dotsPos,
+    getRecentDot,
+    getIndexByValue,
+    getValueByIndex,
+    isActiveByPos,
+  }
 }
