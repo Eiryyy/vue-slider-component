@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { Value, Styles, Position, TooltipProp, TooltipFormatter } from './typings'
 import './styles/dot.scss'
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 
 const props = withDefaults(
   defineProps<{
@@ -19,7 +19,7 @@ const props = withDefaults(
 const emit = defineEmits<{
   (e: 'dragStart'): void
 }>()
-
+const dotRef = ref<HTMLDivElement>(null)
 const showTooltip = computed(() => {
   switch (props.tooltip) {
     case 'always':
@@ -80,10 +80,12 @@ const dragStart = () => {
   }
   emit('dragStart')
 }
+defineExpose({ dotRef })
 </script>
 
 <template>
   <div
+    ref="dotRef"
     :class="dotClasses"
     :aria-valuetext="tooltipValue"
     @mousedown="dragStart"

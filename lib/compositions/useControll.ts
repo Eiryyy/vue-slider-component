@@ -39,17 +39,17 @@ export const useControl = (
   data: Ref<Value[] | undefined>,
   _enableCross: Ref<boolean>,
   _fixed: Ref<boolean>,
-  max: Ref<number>,
   min: Ref<number>,
+  max: Ref<number>,
   interval: Ref<number>,
   order: Ref<boolean>,
-  _maxRange?: Ref<number | undefined>,
-  _minRange?: Ref<number | undefined>,
-  marks?: Ref<MarksProp>,
-  included?: Ref<boolean>,
-  process?: Ref<ProcessProp>,
-  adsorb?: Ref<boolean>,
-  dotOptions?: Ref<DotOption | DotOption[]>,
+  _minRange: Ref<number | undefined>,
+  _maxRange: Ref<number | undefined>,
+  marks: Ref<MarksProp | undefined>,
+  included: Ref<boolean | undefined>,
+  process: Ref<ProcessProp>,
+  adsorb: Ref<boolean | undefined>,
+  dotOptions: Ref<DotOption | DotOption[] | undefined>,
   onError?: (type: ValueOf<typeof ERROR_TYPE>, message: string) => void,
 ) => {
   const dotsPos = ref<number[]>([])
@@ -57,8 +57,8 @@ export const useControl = (
   const emitError = (type: ValueOf<typeof ERROR_TYPE>) => {
     onError?.(type, ERROR_MSG[type])
   }
-  const maxRange = computed(() => (order.value ? _maxRange?.value || 0 : 0))
   const minRange = computed(() => (order.value ? _minRange?.value || 0 : 0))
+  const maxRange = computed(() => (order.value ? _maxRange?.value || 0 : 0))
   const enableCross = computed(() => (order.value ? _enableCross.value : true))
   const fixed = computed(() => (order.value ? _fixed.value : false))
   if (
@@ -396,5 +396,9 @@ export const useControl = (
     getIndexByValue,
     getValueByIndex,
     isActiveByPos,
+    processArray,
+    syncDotsPos,
+    markList,
+    total,
   }
 }

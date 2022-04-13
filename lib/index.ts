@@ -1,8 +1,8 @@
 /* tslint:disable:import-spacing */
-import VueSlider from './vue-slider'
-import VueSliderMark from './vue-slider-mark'
-import VueSliderDot from './vue-slider-dot'
-import { ERROR_TYPE } from './utils/control'
+import VueSlider from './VueSlider.vue'
+import VueSliderMark from './VueSliderMark.vue'
+import VueSliderDot from './VueSliderDot.vue'
+import { ERROR_TYPE } from './compositions/useControll'
 ;(VueSlider as any).VueSliderMark = VueSliderMark
 ;(VueSlider as any).VueSliderDot = VueSliderDot
 

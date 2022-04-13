@@ -43,7 +43,7 @@ const labelClickHandle = (e: MouseEvent | TouchEvent) => {
 <template>
   <div :class="marksClasses">
     <template v-if="$slots.step()">
-      <slot name="step" />
+      <slot name="step" v-bind="mark" />
     </template>
     <template v-else>
       <div
@@ -58,7 +58,7 @@ const labelClickHandle = (e: MouseEvent | TouchEvent) => {
     </template>
     <template v-if="!hideLabel">
       <template v-if="$slots.label()">
-        <slot name="label" />
+        <slot name="label" v-bind="mark" />
       </template>
       <template v-else>
         <div

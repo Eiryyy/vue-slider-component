@@ -1,7 +1,5 @@
 /// <reference path="./global.d.ts" />
 
-import VueSlider from '../vue-slider'
-
 export interface Styles {
   [key: string]: any
 }
@@ -74,5 +72,3 @@ export interface Process {
   index: number
   style?: Styles
 }
-
-export default VueSlider

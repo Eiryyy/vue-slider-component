@@ -7,27 +7,29 @@ const getControl = (params?: {
   data?: Ref<Value[] | undefined>
   enableCross?: Ref<boolean>
   fixed?: Ref<boolean>
-  max?: Ref<number>
   min?: Ref<number>
+  max?: Ref<number>
   interval?: Ref<number>
   order?: Ref<boolean>
-  maxRange?: Ref<number | undefined>
   minRange?: Ref<number | undefined>
+  maxRange?: Ref<number | undefined>
 }) =>
   useControl(
     params?.value || ref(0),
     params?.data || ref(undefined),
     params?.enableCross || ref(true),
     params?.fixed || ref(false),
-    params?.max || ref(100),
     params?.min || ref(0),
+    params?.max || ref(100),
     params?.interval || ref(1),
     params?.order || ref(true),
-    params?.maxRange,
-    params?.minRange,
-    undefined,
-    undefined,
+    params?.minRange || ref(undefined),
+    params?.maxRange || ref(undefined),
+    ref(undefined),
+    ref(undefined),
     ref(true),
+    ref(undefined),
+    ref(undefined),
   )
 
 test('Method: setDotPos', () => {
