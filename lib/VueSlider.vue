@@ -626,19 +626,13 @@ const getDotStyle = (dot: Dot) => [
   >
     <div class="vue-slider-rail" :style="railStyle">
       <template v-for="(process, i) in processArray">
-        <template v-if="$slots.process()">
-          <slot name="process" v-bind="process" />
-        </template>
-        <template v-else>
+        <slot name="process" v-bind="process">
           <div class="vue-slider-process" :key="`process-${i}`" :style="process.style" />
-        </template>
+        </slot>
       </template>
       <div v-if="sliderMarks" class="vue-slider-marks">
         <template v-for="(mark, i) in markList">
-          <template v-if="$slots.mark()">
-            <slot name="mark" v-bind="mark" />
-          </template>
-          <template v-else>
+          <slot name="mark" v-bind="mark">
             <VueSliderMark
               :key="`mark-${i}`"
               :mark="mark"
@@ -657,7 +651,7 @@ const getDotStyle = (dot: Dot) => [
                 <slot name="label" />
               </template>
             </VueSliderMark>
-          </template>
+          </slot>
         </template>
       </div>
       <VueSliderDot

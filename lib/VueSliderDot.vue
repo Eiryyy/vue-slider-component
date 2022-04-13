@@ -91,22 +91,16 @@ defineExpose({ dotRef })
     @mousedown="dragStart"
     @touchstart="dragStart"
   >
-    <template v-if="$slots.dot()">
-      <slot name="dot" />
-    </template>
-    <template v-else>
+    <slot name="dot">
       <div :class="handleClasses" :style="tooltipStyle" />
-    </template>
+    </slot>
     <template v-if="tooltip !== 'none'">
       <div :class="tooltipClasses">
-        <template v-if="$slots.tooltip()">
-          <slot name="tooltip" />
-        </template>
-        <template v-else>
+        <slot name="tooltip">
           <div :class="tooltipInnerClasses" :style="tooltipStyle">
             <span class="vue-slider-dot-tooltip-text">{{ tooltipValue }}</span>
           </div>
-        </template>
+        </slot>
       </div>
     </template>
   </div>

@@ -5,7 +5,7 @@
   "author": "NightCatSama <642163903@qq.com>",
   "scripts": {
     "prepare": "husky install",
-    "serve": "vue-cli-service serve",
+    "dev": "vite",
     "build": "vue-cli-service build",
     "test:unit": "vitest",
     "lint": "eslint --ext .ts,.tsx,.vue lib",
@@ -37,6 +37,7 @@
     "@vue/babel-plugin-jsx": "^1.1.1",
     "@vue/compiler-sfc": "^3.2.31",
     "@vue/eslint-config-typescript": "^10.0.0",
+    "autoprefixer": "^10.4.4",
     "babel-eslint": "^10.1.0",
     "commitlint": "^16.2.3",
     "core-js": "^3.21.1",

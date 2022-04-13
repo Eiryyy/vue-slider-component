@@ -2,18 +2,10 @@
   <VueSlider v-model="value" :width="400"></VueSlider>
 </template>
 
-<script lang="ts">
-import { Options, Vue } from 'vue-class-component';
-import VueSlider from '../lib/vue-slider';
-
-@Options({
-  components: {
-    VueSlider,
-  },
-})
-export default class App extends Vue {
-  value = 40
-}
+<script lang="ts" setup>
+import { ref } from 'vue'
+import VueSlider from '../lib/VueSlider.vue'
+const value = ref(40)
 </script>
 
 <style lang="scss">
