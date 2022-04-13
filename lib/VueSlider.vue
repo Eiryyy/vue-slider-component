@@ -18,16 +18,7 @@ import VueSliderMark from './VueSliderMark.vue'
 import { getSize, getPos, getKeyboardHandleFunc, HandleFunction } from './utils'
 import Decimal from './utils/decimal'
 import './styles/slider.scss'
-import {
-  computed,
-  onBeforeUnmount,
-  onBeforeUpdate,
-  onMounted,
-  ref,
-  toRef,
-  toRefs,
-  watch,
-} from 'vue'
+import { computed, onBeforeUnmount, onBeforeUpdate, onMounted, ref, toRef, watch } from 'vue'
 import { useControl, ERROR_TYPE } from './compositions/useControll'
 import { useState, SliderState } from './compositions/useState'
 type ValueOf<T> = T[keyof T]
@@ -35,7 +26,7 @@ const DEFAULT_SLIDER_SIZE = 4
 
 const props = withDefaults(
   defineProps<{
-    modelValue: Value | Value[]
+    modelValue: string | number | (string | number)[]
     silent?: boolean
     direction?: Direction
     width?: number | string
@@ -64,7 +55,7 @@ const props = withDefaults(
     minRange?: number
     maxRange?: number
     marks?: MarksProp
-    process: ProcessProp
+    process?: ProcessProp
     included?: boolean
     adsorb?: boolean
     hideLabel?: boolean
@@ -80,7 +71,6 @@ const props = withDefaults(
     labelActiveStyle?: Styles
   }>(),
   {
-    modelValue: () => [0],
     silent: false,
     direction: 'ltr',
     dotSize: 14,
@@ -599,7 +589,7 @@ onBeforeUnmount(() => {
   document.removeEventListener('keydown', keydownHandle)
 })
 
-const { markList } = toRefs(control)
+const markList = control.markList
 
 const getMarkStyle = (mark: Mark) => ({
   [isHorizontal.value ? 'height' : 'width']: '100%',
